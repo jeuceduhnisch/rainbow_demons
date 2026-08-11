@@ -1,0 +1,18 @@
+Rainbow Demons - final working firmware
+Release: 2026-08-11
+Target: Daisy Patch SM / STM32H750
+Source: RainbowDemons.cpp
+Binary: build/RainbowDemons.bin
+Binary size: 87208 bytes
+SHA-256: 661A7DB0510F7DD0625B3B4981CDC01A40592A78591653F14ADCE66548FBF970
+Build command: make clean && make
+Flash command: make program-dfu
+
+Independent-design notice: see the top-level README.
+
+Acceptance status reported by builder:
+- Mix reaches true dry; working wet endpoint confirmed.
+- 100k input pulldown fixed open-input behavior.
+- Mode 3 head 2 direction and center calibrated.
+- Mode 3 range set to -3 through +3 octaves.
+- Mode changes invalidate and clear the previous capture.
