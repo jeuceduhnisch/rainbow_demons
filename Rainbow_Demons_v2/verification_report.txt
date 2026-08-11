@@ -1,0 +1,11 @@
+Tape Delay 18HP V2 independent verification
+============================================
+PASS
+
+Carrier outline: 91.44 x 111.50 mm (y=8.50..120.00)
+Pot footprint: 2.50 mm pin pitch; 9.60 mm mounting-tab spacing
+Jack footprint: S/TN/T = 0.00/3.10/11.40 mm; 3.00 mm barrel NPTH
+Square pads: pot GND, jack sleeve/GND, LED cathode/GND
+Patch SM: rear-side mirror checked at A1, A4, A5, A7, and A10
+Jack normalization: IN L to IN R switch retained; OUT L/R switch pads unconnected
+KiCad DRC: 0 violations; 0 unconnected
