@@ -11,7 +11,7 @@ from reportlab.platypus import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "outputs" / "RAINBOW_DEMONS_WORKING_RELEASE" / "Rainbow_Demons_Build_Documentation.pdf"
+OUT = ROOT / "Rainbow_Demons_v2" / "release" / "Rainbow_Demons_Build_Documentation.pdf"
 OUT.parent.mkdir(parents=True, exist_ok=True)
 
 NAVY = colors.HexColor("#17243A")

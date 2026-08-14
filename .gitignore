@@ -1,17 +1,38 @@
-# This repository intentionally tracks only the curated Rainbow Demons release.
-*
+# Codex/workspace metadata and generated intermediates
+/.agents/
+/.codex/
+/build/
+/output/
+/outputs/
+/tmp/
+/work/
+**/build/*
+!**/build/*.bin
 
-!.gitignore
-!.gitattributes
-!README.md
-!VERSION
+# Local diagnostic captures and renders
+/*.raw
+/*.wav
+/*spectrogram*.png
+/back_render*.png
+/front_render*.png
+/patch_sm_datasheet_page14.png
 
-!outputs/
-outputs/*
-!outputs/RAINBOW_DEMONS_WORKING_RELEASE/
-!outputs/RAINBOW_DEMONS_WORKING_RELEASE/**
-!outputs/RAINBOW_DEMONS_v2.0.0.zip
+# Retired local experiments retained outside the curated repository
+/CT5_*
+/single_patch_sm_breakout_12hp_fit_revB/
+/CT5InspiredPatchSM.cpp
+/Makefile
+/startup_stm32h750xx.c
+/build_guide.md
+/README_NEW_FOLDER.md
+/official_patch_sm_pinout.csv
+/ES_Patch_SM_datasheet_v1.0.5.pdf
+/analyze_*.py
+/compare_record_noise.py
+/correct_vlc_wav_endian.py
+/f32_raw_to_wav.py
+/make_ct5_spectrogram.py
 
-!tools/
-tools/*
-!tools/make_rainbow_demons_release_pdf.py
+# Only the maintained release-document generator is part of this repository.
+/tools/*
+!/tools/make_rainbow_demons_release_pdf.py

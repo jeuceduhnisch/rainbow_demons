@@ -13,5 +13,14 @@ VERSION text eol=lf
 *.pdf binary
 *.zip binary
 
-# Preserve the vendor startup file exactly as supplied.
-outputs/RAINBOW_DEMONS_WORKING_RELEASE/firmware/startup_stm32h750xx.c -whitespace
+# Preserve vendor startup files exactly as supplied.
+firmware/startup_stm32h750xx.c -whitespace
+Rainbow_Demons_v2/release/firmware/startup_stm32h750xx.c -whitespace
+
+# Preserve the already-published v2 KiCad exports during the history merge.
+Rainbow_Demons_v2/main_drc.json -whitespace
+Rainbow_Demons_v2/*.kicad_pcb -whitespace
+Rainbow_Demons_v2/*.kicad_pro -whitespace
+Rainbow_Demons_v2/Rainbow_Demons_Base_PCB_Wiring_Map.csv -text -whitespace
+Rainbow_Demons_v2/verification_report.txt -text -whitespace
+pcb/Rainbow_Demons_Base_PCB_Wiring_Map.csv -text -whitespace
