@@ -1,0 +1,25 @@
+Rainbow Demons - final working firmware
+Version: 2.0.0
+Release: 2026-08-13
+Target: Daisy Patch SM / STM32H750
+Source: RainbowDemons.cpp
+Binary: build/RainbowDemons.bin
+Binary size: 88252 bytes
+SHA-256: B5329B1F9805EFE256EF1C30324392757952D0C81F3856A0632B72B872BF06DA
+Build command: make clean && make
+Flash command: make program-dfu
+
+Independent-design notice: see the top-level README.
+
+Working-baseline acceptance status reported by builder:
+- Mix reaches true dry; working wet endpoint confirmed.
+- 100k input pulldown fixed open-input behavior.
+- Mode 3 head 2 direction and center calibrated.
+- Mode 3 range set to -3 through +3 octaves.
+
+2026-08-13 additions (build verified; hardware test pending):
+- REC trigger pulses alternate start / stop / start-new capture.
+- Slice Feedback controls automatic-record density (more frequent and shorter
+  clockwise); Record or the
+  first REC pulse latches manual/external priority until Reset or mode change.
+- Mode changes invalidate and clear the previous capture.

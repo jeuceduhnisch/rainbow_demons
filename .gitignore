@@ -1,0 +1,17 @@
+# This repository intentionally tracks only the curated Rainbow Demons release.
+*
+
+!.gitignore
+!.gitattributes
+!README.md
+!VERSION
+
+!outputs/
+outputs/*
+!outputs/RAINBOW_DEMONS_WORKING_RELEASE/
+!outputs/RAINBOW_DEMONS_WORKING_RELEASE/**
+!outputs/RAINBOW_DEMONS_v2.0.0.zip
+
+!tools/
+tools/*
+!tools/make_rainbow_demons_release_pdf.py

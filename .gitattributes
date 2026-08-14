@@ -1,0 +1,17 @@
+* text=auto
+
+*.c text eol=lf
+*.cpp text eol=lf
+*.csv text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.txt text eol=lf
+Makefile text eol=lf
+VERSION text eol=lf
+
+*.bin binary
+*.pdf binary
+*.zip binary
+
+# Preserve the vendor startup file exactly as supplied.
+outputs/RAINBOW_DEMONS_WORKING_RELEASE/firmware/startup_stm32h750xx.c -whitespace

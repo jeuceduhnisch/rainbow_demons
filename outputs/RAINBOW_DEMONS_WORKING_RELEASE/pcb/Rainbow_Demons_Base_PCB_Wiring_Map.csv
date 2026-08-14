@@ -1,0 +1,25 @@
+control,signal,patch_sm_pin,notes
+TIME pot wiper,ADC_9,A2,Delay time knob
+TIME bottom jack,CV_1,C5,"Bottom row, column 1"
+FEEDBACK pot wiper,CV_7,C8,Feedback amount knob
+FEEDBACK bottom jack,CV_2,C4,"Bottom row, column 2"
+MIX pot wiper,CV_8,C9,Dry/wet mix knob
+MIX bottom jack,CV_3,C3,"Bottom row, column 3"
+FILTER pot wiper,ADC_10,A3,Tone/filter knob
+FILTER bottom jack,CV_4,C2,"Bottom row, column 4"
+FLUTTER pot wiper,ADC_11,D9,Wow/flutter knob
+FLUTTER bottom jack,CV_5,C6,"Bottom row, column 5"
+FREEZE button,FREEZE_BTN / SPI2_CS,D1,Momentary to ground
+REVERSE button,REVERSE_BTN / SDMMC1_D3,D2,Momentary to ground
+TEMPO LED signal,LED_TEMPO / I2C1_SDA,B8,Series resistor holes included
+FREEZE LED signal,LED_FREEZE / GATE_OUT_1,B5,Firmware update required
+REVERSE LED signal,LED_REVERSE / I2C1_SCL,B7,Firmware update required
+CLOCK input top jack,GATE_IN_1,B10,"Top jack row, left"
+CLOCK output top jack,GATE_OUT_2,B6,"Top jack row, right"
+Audio input left,AUDIO_IN_LEFT,B4,"Middle jack row, column 1"
+Audio input right,AUDIO_IN_RIGHT,B3,"Middle jack row, column 2"
+Audio output left,AUDIO_OUT_LEFT,B2,"Middle jack row, column 4"
+Audio output right,AUDIO_OUT_RIGHT,B1,"Middle jack row, column 5"
+IN R normal,AUDIO_IN_LEFT,B4,IN R switched contact is normalled from IN L
+OUT L switch,NC,,OUT L switched contact is intentionally unconnected
+OUT R switch,NC,,OUT R switched contact is intentionally unconnected
