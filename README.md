@@ -33,3 +33,11 @@ MTL ASM's Count to 5. It is not a clone, reproduction, port, or claim of exact
 pedal behavior. No original source code, firmware, schematics, PCB files, or
 proprietary design material were used. This project is not affiliated with or
 endorsed by MTL ASM.
+
+## License
+
+This project is released under the Unlicense. See [LICENSE](LICENSE).
+
+## Acknowledgments
+
+Documentation, cleanup, and release organization were assisted by OpenAI Codex.
