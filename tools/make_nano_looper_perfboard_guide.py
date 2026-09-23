@@ -8,7 +8,7 @@ from reportlab.platypus import Paragraph
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
 from nano_r4_looper_perfboard_model import (
-    COLS, ROWS, xy, validate,
+    COLS, ROWS, MOUNT_PADS, xy, validate,
     CORE_PARTS, CORE_WIRES, CORE_J1, NANO, SRAM,
     INTERFACE_PARTS, INTERFACE_WIRES, INTERFACE_J1, U1, J2, J3, JPWR,
 )
@@ -69,7 +69,7 @@ def header(title, sub):
     txt(36, 731, title, 20.5, True)
     para(36, 711, sub, 540, 9.2, 12)
     c.setStrokeColor(LIGHT); c.line(36, 685, 576, 685)
-    txt(36, 20, "Rev 1.0 | 23 Sep 2026 | 24 x 36 isolated pads | Physical build untested", 7.5, color=GRAY)
+    txt(36, 20, "Rev 1.1 | 23 Sep 2026 | perimeter headers | Physical build untested", 7.5, color=GRAY)
     txt(576, 20, f"{page_no} / {TOTAL}", 7.5, color=GRAY, align="right")
 
 
@@ -209,27 +209,36 @@ class Board:
         if pts:
             txt(sum(x for x,_ in pts)/len(pts), max(y for _,y in pts)+10, ref, 6.5, True, color, "center")
 
+    def mounts(self):
+        for pad in MOUNT_PADS:
+            x, y = self.at(pad)
+            c.setFillColor(white); c.setStrokeColor(AMBER); c.setLineWidth(1.2)
+            c.circle(x, y, max(3.0, self.p*.25), fill=1, stroke=1)
+            c.line(x-2.4, y, x+2.4, y); c.line(x, y-2.4, x, y+2.4)
+            txt(x, y+4.5, "M3", 4.2, True, AMBER, "center")
+
     def wire(self, item, color):
         c.saveState(); c.setStrokeColor(color); c.setLineWidth(1.25)
         if item["note"].startswith("BARE"): c.setLineWidth(2.0)
-        path=c.beginPath()
-        for i,pad in enumerate(item["pads"]):
-            x,y=self.at(pad)
-            if i==0: path.moveTo(x,y)
-            else: path.lineTo(x,y)
-        c.drawPath(path)
+        for route in item.get("routes", [item["pads"]]):
+            path=c.beginPath()
+            for i,pad in enumerate(route):
+                x,y=self.at(pad)
+                if i==0: path.moveTo(x,y)
+                else: path.lineTo(x,y)
+            c.drawPath(path)
         for pad in item["pads"]:
             x,y=self.at(pad); c.setFillColor(color); c.circle(x,y,max(1.6,self.p*.11),fill=1,stroke=0)
         c.restoreState()
 
 
 def draw_core_components(b):
-    b.grid(); b.nano(); b.dip(SRAM,"U2","23LC1024"); b.connector(CORE_J1,"J1")
+    b.grid(); b.mounts(); b.nano(); b.dip(SRAM,"U2","23LC1024"); b.connector(CORE_J1,"J1")
     for p in CORE_PARTS: b.part(p)
 
 
 def draw_interface_components(b):
-    b.grid(); b.dip(U1,"U1","TL074"); b.connector(INTERFACE_J1,"J1")
+    b.grid(); b.mounts(); b.dip(U1,"U1","TL074"); b.connector(INTERFACE_J1,"J1")
     b.connector(J2,"J2"); b.connector(J3,"J3"); b.connector(JPWR,"J_PWR",RED)
     for p in INTERFACE_PARTS: b.part(p)
 
@@ -257,13 +266,13 @@ header("Build from coordinates, not interpretation",
        "This replacement adds actual component holes, mirrored solder views and a numbered endpoint list for every electrical connection.")
 box(36,535,540,126,"Fixed construction assumptions")
 para(50,627,"Use <b>two 24-column x 36-row boards of INDIVIDUAL, ISOLATED pads at 2.54mm pitch</b>. Coordinates are A-X left-to-right and 1-36 top-to-bottom on the component side. Do not use stripboard or grouped-pad protoboard.",512,10)
-para(50,571,"Core Board carries Nano R4, 23LC1024 and ADC filtering. Interface Board carries TL074, power protection, audio and CV circuits. J1 is a direct 2x15 stack connector at H20/I20 through H34/I34 on both boards.",512,9.5)
+para(50,571,"Core Board carries Nano R4, 23LC1024 and ADC filtering. Interface Board carries TL074, power protection, audio and CV circuits. J1 is a direct 2x15 stack connector on the right edge at W20/X20 through W34/X34 on both boards.",512,9.5)
 txt(36,505,"How to read every board page",13,True)
 rows=[("COMPONENT side","Letters A-X read left to right; red dot marks A1."),
       ("SOLDER side","Board is flipped left/right; letters read X-A. Row numbers never change."),
       ("Filled dots","Solder endpoints. A crossing line is insulated and does not join other pads."),
       ("BARE spine","Solder every named pad on the continuous bus."),
-      ("J1 key","Remove pin 30 and permanently block socket position I34."),]
+      ("J1 key","Remove pin 30 and permanently block socket position X34."),]
 table(36,487,540,["Mark","Meaning"],rows,[115,425],rowh=24,size=8.6,wrap=True)
 txt(36,318,"Build order",13,True)
 rows=[("1","Mark and cut both boards; dry-fit J1 and four standoffs."),
@@ -306,15 +315,15 @@ y=table(306,665,270,["J2","Panel net"],rows2,[38,232],rowh=18,size=7.3)
 rows3=[(p,J3[p][1]) for p in range(1,9)]
 table(306,y-18,270,["J3","Jack net"],rows3,[38,232],rowh=16,size=7.1)
 box(306,45,270,62,"Orientation")
-para(320,86,"On both boards, J1 pin 1 is H20 and pin 2 is I20. Pin 29 is H34. I34 is the blocked key. Mark H20 red before soldering. J2/J3 pin 1 is the upper-left pad in the component view.",242,7.8)
+para(320,86,"On both boards, J1 pin 1 is W20 and pin 2 is X20. Pin 29 is W34. X34 is the blocked key. Mark W20 red before soldering. J2/J3 pin 1 is the upper-left pad in the component view.",242,7.8)
 end()
 
 # 4 core placement
 header("Core Board - component placement",
-       "Place every part in the listed holes. USB-C faces row 1. Socket U2 and the Nano; leave JP1 open until power checks pass.")
+       "Place every part in the listed holes. Nano USB-C faces toward row 18. Socket U2 and the Nano; leave JP1 open until power checks pass.")
 b=Board(142,651,14,False); draw_core_components(b)
 box(36,65,540,70,"Polarity and orientation")
-para(50,111,"U2 notch faces row 1. D1 band is at X30; D2 band is at S32. C9 positive lead is X35. Nano USB-C faces row 1. J1 pin 1 is H20; I34 stays empty.",512,9)
+para(50,111,"U2 notch faces row 1. D1 band is at V30; D2 band is at S32. C9 positive lead is V35. Nano USB-C faces toward row 18. J1 pin 1 is W20; X34 stays empty. Enlarge D2/T2/D35/T35 to 3.2mm for four M3 standoffs.",512,8.6)
 end()
 
 # 5 core coordinate tables
@@ -331,14 +340,14 @@ end()
 
 # 6 core ground/power
 header("Core solder pass 1 - ground and power",
-       "SOLDER side: columns are mirrored. Build the U-column ground spine and X-column +5N spine before any signal links.")
+       "SOLDER side: columns are mirrored. Build the U-column ground spine and V-column +5N spine before any signal links.")
 b=Board(54,645,11,True); b.grid()
 for w in CORE_WIRES:
     if w["stage"] in ("ground","power"): b.wire(w, GRAY if w["stage"]=="ground" else RED)
 items=[w for w in CORE_WIRES if w["stage"] in ("ground","power")]
 two_op_tables(330,645,246,items,6.1)
 box(330,125,246,88,"Checks")
-para(344,184,"CG01 and CP01 are bare spines soldered at every pad. CG02 is bare only from I20-I28. All other links are insulated. Verify U-to-X is open before fitting Nano/U2.",218,8)
+para(344,184,"CG01 and CP01 are bare spines soldered at every pad. CG02 is bare only from X20-X28. All other links are insulated. Verify U-to-V is open before fitting Nano/U2.",218,8)
 end()
 
 # 7 core signal A
@@ -368,7 +377,7 @@ header("Interface Board - component placement",
        "Place U1, protection, audio, CV and header parts exactly as shown. J1 occupies the same coordinates as on the Core Board.")
 b=Board(142,651,14,False); draw_interface_components(b)
 box(36,58,540,78,"Polarity and orientation")
-para(50,112,"U1 notch faces row 1. D5 band L7; D6 band N3. C10 + at J7; C11 + at J5; C14 + at K3; C17 + at L12. D7 band F28; D8 band F33. Verify Q1/Q2 E-B-C before insertion.",512,8.7)
+para(50,112,"U1 notch faces row 1. D5 band L7; D6 band N3. C10 + at J7; C11 + at J5; C14 + at K3; C17 + at L12. D7 band F28; D8 band F33. Verify Q1/Q2 E-B-C. Enlarge D2/T2/D35/T35 to 3.2mm for the matching standoffs.",512,8.3)
 end()
 
 # 10 interface parts top
@@ -386,18 +395,18 @@ header("Interface Board - exact lead coordinates, part 2",
 rows=[(p["ref"],p["value"]," / ".join(p["pads"])) for p in INTERFACE_PARTS[17:]]
 y=table(36,665,540,["Ref","Value","Lead holes"],rows,[45,120,375],rowh=25,size=8)
 box(36,y-112,540,94,"Headers on the component side")
-para(50,y-45,"J1: H20/I20 through H34/I34; I34 empty.<br/>J2: N20/O20 through N29/O29.<br/>J3: V20/W20 through V23/W23.<br/>J_PWR: T3/U3 through T7/U7; keyed notch must force red stripe to pins 1/2 at row 3.",512,9)
+para(50,y-45,"J1: W20/X20 through W34/X34; X34 empty.<br/>J2: A23/B23 through A32/B32.<br/>J3: A33/B33 through A36/B36.<br/>J_PWR: A12/B12 through A16/B16; keyed notch must force red stripe to pins 1/2 at row 12.",512,9)
 end()
 
 # 12 interface ground
 header("Interface solder pass 1 - ground",
-       "SOLDER side. A1-A36 is the main bare ground spine; J1 and J2 each have a shorter local bare ground spine.")
+       "SOLDER side. C1-C36 is the main bare ground spine; J1 and J2 each have a shorter local bare ground spine.")
 ground=[w for w in INTERFACE_WIRES if w["stage"]=="ground"]
 b=Board(54,645,11,True); b.grid()
 for w in ground: b.wire(w, GRAY)
 two_op_tables(330,645,246,ground,5.7)
 box(330,79,246,68,"Continuity")
-para(344,124,"Every J_PWR ground pin, every jack sleeve, U1 pin 12, J1 grounds and J2 grounds must reach A1-A36. No rail or signal may reach A.",218,7.7)
+para(344,124,"Every J_PWR ground pin, every jack sleeve, U1 pin 12, J1 grounds and J2 grounds must reach C1-C36. No rail or signal may reach the C-column ground spine.",218,7.7)
 end()
 
 # 13 interface power
@@ -410,7 +419,7 @@ for w in power:
     b.wire(w,color)
 two_op_tables(330,645,246,power,5.8)
 box(330,150,246,93,"Power before ICs")
-para(344,216,"With J1 disconnected: verify protected +12 at L7/J7/B6, protected -12 at L3/J3/E6, and no short to A/GND. After Nano supplies +5N through J1, VREF_DIV must be near 2.5V.",218,7.8)
+para(344,216,"With J1 disconnected: verify protected +12 at L7/J7/B6, protected -12 at L3/J3/E6, and no short to C/GND. After Nano supplies +5N through J1, VREF_DIV must be near 2.5V.",218,7.8)
 end()
 
 # 14 interface audio
@@ -470,7 +479,7 @@ header("Staged power-up and functional checks",
        "Do not insert the Nano, U1 or U2 until the unpowered checks pass. Power down immediately if any voltage or temperature is wrong.")
 y=653
 txt(36,y,"A. Boards separated, unpowered",12,True); y-=29
-for s in ["Both I34 key positions are empty/blocked; H20 is marked pin 1 on both boards.",
+for s in ["Both X34 key positions are empty/blocked; W20 is marked pin 1 on both boards.",
           "No short from +12P, -12P or +5N to GND; +12P and -12P are not shorted together.",
           "Core J1 pins 9/11/13/15/17 reach Nano A2-A6 through about 1K.",
           "Interface J_PWR pins 1/2 reach only the -12 path; pins 9/10 reach only the +12 path."]:

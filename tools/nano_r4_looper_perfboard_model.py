@@ -7,6 +7,7 @@ Every point-to-point link is insulated unless its note explicitly says BARE.
 
 COLS = "ABCDEFGHIJKLMNOPQRSTUVWX"
 ROWS = 36
+MOUNT_PADS = ("D2", "T2", "D35", "T35")
 
 
 def xy(p):
@@ -272,6 +273,142 @@ for ref, net, pads in [
 ]: iw(ref, "signal", net, pads)
 
 
+# Revision 1.1 - perimeter connectors and orthogonal routing
+#
+# The first validated layout kept J1 near the middle of both boards.  It was
+# electrically sound, but the resulting point-to-point drawing was needlessly
+# difficult to follow.  This transformation keeps the same circuit and net
+# names while moving every service connector to a board edge.  The Nano moves
+# down beside J1 so most Core control wiring is short; J2 is row-aligned with
+# J1 so the five pots and three switch/button rows cross the Interface Board in
+# straight horizontal runs.
+
+
+def _remap_group(group, pad_map):
+    return {key: (pad_map.get(value[0], value[0]), *value[1:])
+            for key, value in group.items()}
+
+
+def _remap_parts(parts, mapper):
+    for part in parts:
+        part["pads"] = [mapper(pad) for pad in part["pads"]]
+
+
+def _remap_wires(wires, mapper):
+    for wire in wires:
+        wire["pads"] = [mapper(pad) for pad in wire["pads"]]
+
+
+def _orthogonal_routes(wire):
+    """Return independent one-bend branches instead of a zigzag polyline."""
+    pads = wire["pads"]
+    if wire["note"].startswith("BARE") or len(pads) < 2:
+        return [pads]
+    source = pads[0]
+    sx, sy = xy(source)
+    routes = []
+    for destination in pads[1:]:
+        dx, dy = xy(destination)
+        if sx == dx or sy == dy:
+            routes.append([source, destination])
+        else:
+            # Travel horizontally first, then vertically at the destination.
+            bend = f"{COLS[dx]}{sy + 1}"
+            routes.append([source, bend, destination])
+    return routes
+
+
+# Core Board: J1 is against the right edge; Nano pins occupy rows 20-34.
+_old_core_j1 = dict(CORE_J1)
+_old_nano = dict(NANO)
+_core_j1_pad_map = {
+    value[0]: (f"W{20 + (pin - 1) // 2}" if pin % 2 else f"X{20 + (pin - 1) // 2}")
+    for pin, value in _old_core_j1.items()
+}
+_core_nano_pad_map = {
+    value[0]: f"{value[0][0]}{int(value[0][1:]) + 17}"
+    for value in _old_nano.values()
+}
+
+
+def _core_pad(pad):
+    if pad in _core_j1_pad_map:
+        return _core_j1_pad_map[pad]
+    if pad in _core_nano_pad_map:
+        return _core_nano_pad_map[pad]
+    # The +5V spine moves one column inward so X20-X34 can hold J1.
+    if pad.startswith("X"):
+        return "V" + pad[1:]
+    return pad
+
+
+_remap_parts(CORE_PARTS, _core_pad)
+_remap_wires(CORE_WIRES, _core_pad)
+for wire in CORE_WIRES:
+    wire["note"] = wire["note"].replace("X pad", "V pad").replace("+5N spine", "+5N spine")
+NANO = _remap_group(_old_nano, _core_nano_pad_map)
+CORE_J1 = connector_2x(20, 15, "W", "X", J1_NETS)
+
+
+# Interface Board connector locations:
+#   J_PWR A/B12-16, J2 A/B23-32, J3 A/B33-36, J1 W/X20-34.
+_old_interface_j1 = dict(INTERFACE_J1)
+_old_j2 = dict(J2)
+_old_j3 = dict(J3)
+_old_jpwr = dict(JPWR)
+_interface_connector_pad_map = {}
+for old, new in (
+    (_old_interface_j1, connector_2x(20, 15, "W", "X", J1_NETS)),
+    (_old_j2, connector_2x(23, 10, "A", "B", J2_NETS)),
+    (_old_j3, connector_2x(33, 4, "A", "B", J3_NETS)),
+    (_old_jpwr, connector_2x(12, 5, "A", "B", JPWR_NETS)),
+):
+    for pin in old:
+        _interface_connector_pad_map[old[pin][0]] = new[pin][0]
+
+
+def _interface_pad(pad):
+    if pad in _interface_connector_pad_map:
+        return _interface_connector_pad_map[pad]
+    # Clear column A for edge connectors and X for J1.
+    if pad.startswith("A"):
+        return "C" + pad[1:]
+    if pad.startswith("X") and 20 <= int(pad[1:]) <= 36:
+        return "U" + pad[1:]
+    if pad == "C28":
+        return "D28"
+    if pad == "C33":
+        return "D33"
+    return pad
+
+
+_remap_parts(INTERFACE_PARTS, _interface_pad)
+_remap_wires(INTERFACE_WIRES, _interface_pad)
+for wire in INTERFACE_WIRES:
+    wire["note"] = wire["note"].replace("A pad", "C pad").replace("CV +5N spine", "perimeter +5N spine")
+
+# The two CV pull-ups now terminate directly on the relocated U-column +5V
+# spine; their transistor collectors remain at S26 and S31.
+for part in INTERFACE_PARTS:
+    if part["ref"] == "R22":
+        part["pads"] = ["T25", "U25"]
+    elif part["ref"] == "R25":
+        part["pads"] = ["T30", "U30"]
+for wire in INTERFACE_WIRES:
+    if wire["ref"] == "IS36":
+        wire["pads"] = ["S26", "T25", "X31"]
+    elif wire["ref"] == "IS40":
+        wire["pads"] = ["S31", "T30", "W32"]
+
+INTERFACE_J1 = connector_2x(20, 15, "W", "X", J1_NETS)
+J2 = connector_2x(23, 10, "A", "B", J2_NETS)
+J3 = connector_2x(33, 4, "A", "B", J3_NETS)
+JPWR = connector_2x(12, 5, "A", "B", JPWR_NETS)
+
+for wire in CORE_WIRES + INTERFACE_WIRES:
+    wire["routes"] = _orthogonal_routes(wire)
+
+
 def _validate_board(parts, pin_groups, wires, empty=()):
     expected = {}
     occupied = {}
@@ -325,13 +462,13 @@ def validate():
         CORE_PARTS,
         [("NANO", NANO), ("U2", SRAM), ("J1", CORE_J1)],
         CORE_WIRES,
-        empty=("I34",),
+        empty=("X34", *MOUNT_PADS),
     )
     interface = _validate_board(
         INTERFACE_PARTS,
         [("U1", U1), ("J1", INTERFACE_J1), ("J2", J2), ("J3", J3), ("J_PWR", JPWR)],
         INTERFACE_WIRES,
-        empty=("I34",),
+        empty=("X34", *MOUNT_PADS),
     )
     # Cross-board interface agreement is the central invariant.
     for pin in range(1, 31):
