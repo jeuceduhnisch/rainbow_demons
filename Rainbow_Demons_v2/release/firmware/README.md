@@ -1,7 +1,8 @@
 # Final firmware
 
-This source/binary pair is v2.0.0, the 2026-08-13 release built from the working-module
-baseline, with clock-toggle and Slice automatic-record control added.
+This source/binary pair is v2.0.1, the 2026-09-29 hardware-tested release. It
+preserves the v2.0.0 behavior and changes the audio block size from 16 to 2 to
+move the callback cadence from an audible 3 kHz to 24 kHz.
 
 This is independent clean-room firmware for Rainbow Demons. See the top-level
 README for the independent-design disclaimer.
@@ -26,6 +27,14 @@ The Makefile falls back to the known-good SDK at
 override `LIBDAISY_DIR` and `DAISYSP_DIR` on the command line.
 
 See `BUILD_MANIFEST.txt` for the accepted binary hash and behavior summary.
+
+## Callback-noise correction
+
+The v2.0.0 build used a 16-sample block at 48 kHz. A phone recording showed a
+stable comb at approximately 3, 6, 9 and 12 kHz, matching the 3 kHz callback
+rate and its harmonics. The 2-sample diagnostic removed the audible squeal and
+passed Tape, Slice and Scatter stress testing on the built module. No DSP,
+control-map or hardware-pin behavior changed in v2.0.1.
 
 ## REC trigger behavior
 

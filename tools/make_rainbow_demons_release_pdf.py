@@ -79,7 +79,7 @@ def footer(canvas, doc):
     canvas.line(0.62 * inch, 0.48 * inch, 7.88 * inch, 0.48 * inch)
     canvas.setFont("Helvetica", 7)
     canvas.setFillColor(MUTED)
-    canvas.drawString(0.62 * inch, 0.31 * inch, "Rainbow Demons v2.0.0 - independent Patch SM instrument - 2026-08-13")
+    canvas.drawString(0.62 * inch, 0.31 * inch, "Rainbow Demons v2.0.1 - independent Patch SM instrument - 2026-09-29")
     canvas.drawString(6.95 * inch, 0.31 * inch, f"Page {doc.page}")
     canvas.restoreState()
 
@@ -96,7 +96,7 @@ story += [Spacer(1, 0.38*inch), p("Rainbow Demons", "Cover"),
           p("An original, independently designed Eurorack instrument", "Subtitle")]
 story.append(table([
     ["Release", "Platform", "Format", "Firmware status"],
-    ["v2.0.0 / 2026-08-13", "Daisy Patch SM", "Tape-delay PCB / mono", "Built from verified baseline"],
+    ["v2.0.1 / 2026-09-29", "Daisy Patch SM", "Tape-delay PCB / mono", "Built, flashed and hardware-tested"],
 ], [1.2*inch, 1.55*inch, 1.2*inch, 2.4*inch]))
 story += [Spacer(1, 12), p("What this package contains", "H1x")]
 story += bullets([
@@ -117,6 +117,7 @@ story += bullets([
     "REC CV clock edges alternate start / stop-and-play / start-new capture.",
     "Slice Feedback controls auto-record density; clockwise makes windows more frequent and shorter.",
     "Changing Mode clears and invalidates the previous capture.",
+    "A 2-sample audio block moves callback activity from an audible 3 kHz to 24 kHz; all modes passed the hardware retest.",
 ])
 story += [Spacer(1, 6), p("Independent-design disclaimer", "H2x"), p(
     "Rainbow Demons is inspired by broad buffer-manipulation ideas associated with MTL ASM's Count to 5. "
@@ -151,10 +152,10 @@ signals = [
 ]
 story.append(table(signals, [1.45*inch, 1.4*inch, 1.55*inch, 1.4*inch], tiny=True))
 story += [p("Leave disconnected", "H2x")]
-story += bullets([
-    "B6 from the repurposed Reset trigger jack; B5 FREEZE LED; audio-input-right in the mono build.",
-    "CV5-to-Mix modulation. The final firmware disables it to preserve exact Mix endpoints.",
-])
+story += [p(
+    "<b>-</b> B6 from the repurposed Reset trigger jack; B5 FREEZE LED; audio-input-right in the mono build.<br/>"
+    "<b>-</b> CV5-to-Mix modulation. The final firmware disables it to preserve exact Mix endpoints."
+)]
 story += [p("Unpowered checks", "H2x")]
 story += bullets([
     "No shorts among +12V, -12V, 5V, 3V3 and GND; red stripe reaches marked -12V.",
@@ -211,7 +212,7 @@ story.append(table([["Use", "Command"], ["Flash supplied build", "make program-d
                     ["Clean rebuild + flash", "make clean && make && make program-dfu"]],
                    [1.7*inch, 5.35*inch], tiny=True))
 story += [p("Acceptance test", "H2x")]
-story += bullets([
+acceptance_items = [
     "Power from a test/current-limited supply; stop if anything heats or current is abnormal.",
     "Mix fully counter-clockwise: clean dry audio. Fully clockwise: wet only, no direct leakage.",
     "Slice: hold Record, capture a phrase, release and hear playback.",
@@ -219,10 +220,13 @@ story += bullets([
     "REC CV: pulse 1 starts, pulse 2 stops/plays, pulse 3 starts a fresh capture.",
     "Slice Feedback: CCW disables auto-record; clockwise makes random windows more frequent and shorter. Record or REC CV takes priority.",
     "Change Mode and return. The old phrase must not resume.",
-])
+    "With USB disconnected and the input grounded, the former 3 kHz callback squeal must not be audible at dry, noon or wet Mix settings.",
+    "Stress Tape feedback, Slice density and three-head Scatter; stop if crackling or dropouts occur.",
+]
+story += [p("<br/>".join(f"<b>-</b> {item}" for item in acceptance_items), "Tinyx")]
 story += [p("Binary identity", "H2x"), p(
     "RainbowDemons.bin - final binary identity is listed in BUILD_MANIFEST.txt.<br/>"
-    "Size: 88,252 bytes<br/><font size='7'>B5329B1F9805EFE256EF1C30324392757952D0C81F3856A0632B72B872BF06DA</font>")]
+    "Size: 88,252 bytes<br/><font size='6'>C02E43BDFAF3293CE66D482667BFC05E70C1547ACF37449F2CC3C53EE25D94E8</font>", "Smallx")]
 story.append(PageBreak())
 
 # Page 5
@@ -279,19 +283,19 @@ story += [p("Gerber warning", "H2x"), p(
     "100k input pulldown, B9 Reset-trigger bodge or final Rainbow Demons toggle wiring as copper revisions. "
     "Apply those changes manually, or update the KiCad source and rerun DRC before ordering a native revision.", "Warn")]
 story += [p("Firmware build environment", "H2x")]
-story += bullets([
-    "Target Daisy Patch SM / STM32H750; internal flash address 0x08000000.",
-    "The included Makefile checks libDaisy, CMSIS and DaisySP before compiling.",
-    "On another computer, override LIBDAISY_DIR and DAISYSP_DIR rather than hard-editing source paths.",
-])
+story += [p(
+    "<b>-</b> Target Daisy Patch SM / STM32H750; internal flash address 0x08000000.<br/>"
+    "<b>-</b> The included Makefile checks libDaisy, CMSIS and DaisySP before compiling.<br/>"
+    "<b>-</b> On another computer, override LIBDAISY_DIR and DAISYSP_DIR rather than hard-editing source paths."
+)]
 story += [p("Final preservation checklist", "H2x")]
-story += bullets([
-    "Keep the release ZIP unchanged as the versioned 2026-08-13 baseline.",
-    "Make experimental firmware in a new folder; do not overwrite this binary/source pair.",
-    "Photograph the B9 bodge, 100k pulldown, red-stripe orientation and Patch SM orientation for the build record.",
-    "If controls are replaced, confirm pot polarity and exchange toggle outer wires as needed.",
-])
-story += [Spacer(1, 18), p("Version 2.0.0 - release generated 2026-08-13", "Subtitle")]
+story += [p(
+    "<b>-</b> Keep Rainbow_Demons_v2.0.0.zip unchanged as the rollback baseline; publish v2.0.1 as a separate package.<br/>"
+    "<b>-</b> Make experimental firmware in a new folder; do not overwrite this binary/source pair.<br/>"
+    "<b>-</b> Photograph the B9 bodge, 100k pulldown, red-stripe orientation and Patch SM orientation for the build record.<br/>"
+    "<b>-</b> If controls are replaced, confirm pot polarity and exchange toggle outer wires as needed."
+)]
+story += [Spacer(1, 18), p("Version 2.0.1 - release generated 2026-09-29", "Subtitle")]
 
 doc.build(story)
 print(OUT)

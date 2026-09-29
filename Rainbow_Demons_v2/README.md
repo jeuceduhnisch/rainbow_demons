@@ -39,14 +39,16 @@ Files:
 - `main_gerbers.zip`: main PCB fabrication package, after export.
 - `faceplate_gerbers.zip`: faceplate fabrication package, after export.
 
-## Firmware and build release 2.0.0
+## Firmware and build release 2.0.1
 
 The complete clock-toggle and random-density firmware release is in
 `release/`. It includes source, flashable binary, BOM, build guide, PCB
 modifications, quick start and the six-page combined manual.
 
-The packaged release is `Rainbow_Demons_v2.0.0.zip`. Version 2 adds clock-edge
+The packaged current release is `Rainbow_Demons_v2.0.1.zip`; the unchanged
+`Rainbow_Demons_v2.0.0.zip` is retained for rollback. Version 2 adds clock-edge
 start/stop recording in Slice and Scatter plus randomized Mode 2 recording
-density on the Feedback control. The new firmware built and flashed
-successfully on 2026-08-13; its automation behavior still needs the final
-hands-on acceptance pass.
+density on the Feedback control. Version 2.0.1 changes only the audio block
+size from 16 to 2, moving the callback cadence from 3 kHz to 24 kHz. The new
+firmware built, flashed and passed the complete hands-on mode test on
+2026-09-29 without reported crackling or dropouts.

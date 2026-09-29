@@ -1,11 +1,11 @@
 Rainbow Demons - final working firmware
-Version: 2.0.0
-Release: 2026-08-13
+Version: 2.0.1
+Release: 2026-09-29
 Target: Daisy Patch SM / STM32H750
 Source: RainbowDemons.cpp
 Binary: build/RainbowDemons.bin
 Binary size: 88252 bytes
-SHA-256: B5329B1F9805EFE256EF1C30324392757952D0C81F3856A0632B72B872BF06DA
+SHA-256: C02E43BDFAF3293CE66D482667BFC05E70C1547ACF37449F2CC3C53EE25D94E8
 Build command: make clean && make
 Flash command: make program-dfu
 
@@ -23,3 +23,10 @@ Working-baseline acceptance status reported by builder:
   clockwise); Record or the
   first REC pulse latches manual/external priority until Reset or mode change.
 - Mode changes invalidate and clear the previous capture.
+
+2026-09-29 callback-noise correction (build, flash and hardware test passed):
+- Audio block size changed from 16 to 2 samples at 48 kHz.
+- Callback cadence moved from 3 kHz to 24 kHz.
+- The audible 3/6/9/12 kHz harmonic comb was no longer present in the hardware test.
+- Tape, Slice, Scatter, recording/playback, three heads, controls and mode
+  switching passed without reported crackling or dropouts.

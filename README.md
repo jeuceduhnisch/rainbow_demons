@@ -8,11 +8,12 @@ buffer-manipulation instrument.
 - The repository root preserves the original tested working build from
   2026-08-11, including its firmware, documentation and fabrication files.
 - `Rainbow_Demons_v2/` contains the corrected 18HP hardware revision.
-- `Rainbow_Demons_v2/release/` contains firmware and documentation v2.0.0.
-- `Rainbow_Demons_v2/Rainbow_Demons_v2.0.0.zip` is the complete packaged v2
-  release.
+- `Rainbow_Demons_v2/release/` contains firmware and documentation v2.0.1.
+- `Rainbow_Demons_v2/Rainbow_Demons_v2.0.1.zip` is the current complete release.
+- `Rainbow_Demons_v2/Rainbow_Demons_v2.0.0.zip` remains the immutable rollback
+  package.
 
-## Version 2.0.0
+## Version 2.0.1
 
 Version 2 adds:
 
@@ -21,10 +22,12 @@ Version 2 adds:
   shorter randomized recording windows clockwise.
 - Physical Record and REC CV priority over Mode 2 automation.
 - Automatic four-second Slice and eight-second Scatter capture limits.
+- A hardware-tested audio block-size correction that moves the callback cadence
+  from an audible 3 kHz to 24 kHz and removes the high-pitched harmonic comb.
 
-The v2 firmware builds successfully and was flashed successfully to the target
-module on 2026-08-13. Its new recording automation awaits the final hands-on
-acceptance pass; the original root release remains the known working baseline.
+The v2.0.1 firmware was built, flashed, and tested on the target module on
+2026-09-29. Tape, Slice, Scatter, recording, playback, three-head operation,
+controls and mode switching passed without reported crackling or dropouts.
 
 ## Independent-design disclaimer
 

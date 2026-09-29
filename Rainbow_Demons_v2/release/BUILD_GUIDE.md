@@ -84,5 +84,9 @@ the make command line on another computer.
     Turn it clockwise and confirm randomized capture windows become more
     frequent and shorter. Press Record or send a REC pulse and confirm
     automation yields until Reset or a mode change.
+11. With the input grounded and USB disconnected, listen at dry, noon and wet
+    Mix positions. The previous 3 kHz callback squeal should not be audible.
+12. Stress Tape at high feedback, Slice at maximum density, and Scatter with
+    all three heads. Stop if crackling or audio dropouts occur.
 
 Do not install the module in the main case until these checks pass.

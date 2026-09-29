@@ -1,0 +1,32 @@
+Module: Rainbow Demons
+Release: v2.0.1
+Date: 2026-09-29
+Status: RELEASED - firmware built, flashed and hardware-tested
+Source task: 019f78d2-ce77-7970-9f07-954e1e9a1d2a
+
+Change summary:
+- Audio block size changed from 16 to 2 samples at 48 kHz.
+- Callback cadence moved from 3 kHz to 24 kHz.
+- Audible callback-rate harmonic comb was no longer present in the hardware test.
+- No DSP, control-map, pinout, PCB or panel change.
+
+Verification:
+- Clean firmware build passed.
+- Binary size: 88252 bytes.
+- SHA-256: C02E43BDFAF3293CE66D482667BFC05E70C1547ACF37449F2CC3C53EE25D94E8
+- DFU flash passed.
+- Tape, Slice, Scatter, recording/playback, three heads, controls and mode
+  switching passed without reported crackling or dropouts.
+
+Artifact status:
+- Schematic/circuit explanation: Included in build documentation.
+- BOM: Included.
+- Physical PCB/layout files: Included as KiCad source and Gerbers.
+- External wiring and PCB modifications: Included.
+- Power and connector information: Included.
+- Firmware source/build/upload instructions: Included.
+- Bring-up and acceptance testing: Included.
+- Editable sources and PDF: Included.
+
+Rollback:
+- Rainbow_Demons_v2.0.0.zip remains unchanged.

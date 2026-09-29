@@ -653,7 +653,10 @@ int main(void)
 {
     patch.Init();
     patch.SetAudioSampleRate(kSampleRate);
-    patch.SetAudioBlockSize(16);
+    // Hardware-tested noise correction: a 16-sample block created a 3 kHz
+    // callback cadence and audible harmonic comb. Two samples move the
+    // callback cadence to 24 kHz while preserving all mode behavior.
+    patch.SetAudioBlockSize(2);
 
     // These pins exactly match the already-built carrier and existing guide.
     record_button.Init(DaisyPatchSM::D1);

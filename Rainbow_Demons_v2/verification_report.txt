@@ -1,6 +1,38 @@
-Tape Delay 18HP V2 independent verification
-============================================
-PASS
+Rainbow Demons v2.0.1 release verification
+===========================================
+PASS - 2026-09-29
+
+Firmware
+--------
+Clean build: PASS
+Hardware flash: PASS
+Hardware functional test: PASS (Tape, Slice, Scatter, Record, Reset,
+three-head playback, controls and mode changes)
+Former 3 kHz callback squeal: NOT AUDIBLE with 2-sample audio blocks
+Audio crackling/dropouts during mode stress test: NONE REPORTED
+RainbowDemons.bin: 88,252 bytes
+SHA-256: C02E43BDFAF3293CE66D482667BFC05E70C1547ACF37449F2CC3C53EE25D94E8
+
+Release artifacts
+-----------------
+Build guide and circuit explanation: Included
+BOM: Included
+Physical PCB/layout artifact: Included (KiCad source and Gerbers)
+Point-to-point modifications and external wiring map: Included
+Power and connector instructions: Included
+Firmware source, build files and tested binary: Included
+Bring-up and acceptance test: Included
+Editable source files: Included
+PDF visual inspection: PASS, all 6 pages
+Rainbow_Demons_Build_Documentation.pdf SHA-256:
+0740A80568A626E201746A196FE2E5B46F9568E27D4DAB39365A8C74E5616EDA
+Rainbow_Demons_v2.0.1.zip SHA-256:
+2507F2CD30DF032124D28E9DEA50F21AE611C58FC7B5DD3F1922C0E23F46027F
+Rainbow_Demons_v2.0.0.zip retained unchanged; SHA-256:
+43CA8191D1796DC9D0B864D95516991126F9BD38A8527209A51AD193527344C2
+
+Carrier PCB verification inherited from v2.0.0
+----------------------------------------------
 
 Carrier outline: 91.44 x 111.50 mm (y=8.50..120.00)
 Pot footprint: 2.50 mm pin pitch; 9.60 mm mounting-tab spacing
